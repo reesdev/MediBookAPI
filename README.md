@@ -2,7 +2,7 @@
 
 MediBook API adalah sistem backend terintegrasi untuk manajemen pelayanan dan pendaftaran (booking) pasien di rumah sakit secara mandiri. Sistem ini dirancang untuk memproses pendaftaran pasien rawat jalan pada poliklinik spesialis maupun layanan penunjang medis (seperti cek lab darah dan rontgen radiologi) secara langsung tanpa dokter.
 
-Repositori ini disiapkan khusus sebagai **Dokumen Perancangan PRD (Product Requirements Document) & Tata Kelola Database** untuk memenuhi penilaian **Check Point 1 (PPT & Database Management)**.
+
 
 ---
 
