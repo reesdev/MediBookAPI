@@ -1,0 +1,79 @@
+databaseChangeLog:
+  - changeSet:
+      id: V005-create-doctor-schedules-table
+      author: reesky
+      comment: "Membuat tabel doctor_schedules dengan check constraints dan unique constraint"
+      changes:
+        - createTable:
+            tableName: doctor_schedules
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_schedules_doctor
+                    referencedTableName: doctors
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: service_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_schedules_service
+                    referencedTableName: hospital_services
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: day_of_week
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: TIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: TIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_patients
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: booked_count
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: TINYINT(1)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: doctor_schedules
+            columnNames: doctor_id, day_of_week, start_time
+            constraintName: uq_doctor_day
+        - sql:
+            dbms: mysql
+            sql: ALTER TABLE doctor_schedules ADD CONSTRAINT chk_day_of_week CHECK (day_of_week BETWEEN 1 AND 7);
+        - sql:
+            dbms: mysql
+            sql: ALTER TABLE doctor_schedules ADD CONSTRAINT chk_max_patients CHECK (max_patients > 0);
+        - sql:
+            dbms: mysql
+            sql: ALTER TABLE doctor_schedules ADD CONSTRAINT chk_booked_count CHECK (booked_count >= 0);
