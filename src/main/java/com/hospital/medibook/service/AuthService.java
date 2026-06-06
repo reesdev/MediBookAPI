@@ -9,6 +9,7 @@ import com.hospital.medibook.dto.RegisterRequest;
 import com.hospital.medibook.entity.Patient;
 import com.hospital.medibook.entity.User;
 import com.hospital.medibook.exception.BadRequestException;
+import com.hospital.medibook.exception.ConflictException;
 import com.hospital.medibook.repository.PatientRepository;
 import com.hospital.medibook.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,13 +43,13 @@ public class AuthService {
     @Transactional
     public User register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new BadRequestException("Username sudah terdaftar");
+            throw new ConflictException("Username sudah terdaftar");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BadRequestException("Email sudah terdaftar");
+            throw new ConflictException("Email sudah terdaftar");
         }
         if (patientRepository.existsByNik(request.getNik())) {
-            throw new BadRequestException("NIK sudah terdaftar");
+            throw new ConflictException("NIK sudah terdaftar");
         }
 
         // 1. Buat User

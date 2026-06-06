@@ -5,6 +5,7 @@ import com.hospital.medibook.dto.BookingRequest;
 import com.hospital.medibook.dto.BookingResponse;
 import com.hospital.medibook.entity.*;
 import com.hospital.medibook.exception.BadRequestException;
+import com.hospital.medibook.exception.ConflictException;
 import com.hospital.medibook.exception.ResourceNotFoundException;
 import com.hospital.medibook.repository.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -90,7 +91,7 @@ public class BookingService {
 
             // 6. Validasi Sisa Kuota
             if (schedule.getBookedCount() >= schedule.getMaxPatients()) {
-                throw new BadRequestException("Kuota dokter untuk jadwal yang dipilih sudah penuh.");
+                throw new ConflictException("Kuota dokter untuk jadwal yang dipilih sudah penuh.");
             }
 
             // 7. Hitung Nomor Antrean

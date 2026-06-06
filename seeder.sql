@@ -1,12 +1,12 @@
 USE medibook_db;
 
--- insert user login (password default: '123' terenkripsi bcrypt)
+-- insert user login (password default: 'password' terenkripsi bcrypt)
 INSERT INTO users (id, username, password, email, role, is_deleted) VALUES
-(1, 'reesky_admin', '$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG', 'reesky.it@gmail.com', 'ADMIN', 0),
-(2, 'dr_hendrawan', '$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG', 'dr.hendrawan.spa@gmail.com', 'DOCTOR', 0),
-(3, 'dr_siti_rahmah', '$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG', 'sitirahmah.pd@yahoo.co.id', 'DOCTOR', 0),
-(4, 'budi_santoso', '$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG', 'budi.santoso90@gmail.com', 'PATIENT', 0),
-(5, 'ani_wijaya', '$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG', 'ani.wijaya@outlook.com', 'PATIENT', 0);
+(1, 'reesky_admin', '$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K', 'reesky.it@gmail.com', 'ADMIN', 0),
+(2, 'dr_hendrawan', '$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K', 'dr.hendrawan.spa@gmail.com', 'DOCTOR', 0),
+(3, 'dr_siti_rahmah', '$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K', 'sitirahmah.pd@yahoo.co.id', 'DOCTOR', 0),
+(4, 'budi_santoso', '$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K', 'budi.santoso90@gmail.com', 'PATIENT', 0),
+(5, 'ani_wijaya', '$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K', 'ani.wijaya@outlook.com', 'PATIENT', 0);
 
 -- insert profil dokter
 INSERT INTO doctors (id, user_id, full_name, specialization, sip, phone, email, is_deleted) VALUES

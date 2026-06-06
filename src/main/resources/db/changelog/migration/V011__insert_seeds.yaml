@@ -10,7 +10,7 @@ databaseChangeLog:
             columns:
               - column: { name: id, valueNumeric: 1 }
               - column: { name: username, value: reesky_admin }
-              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: reesky.it@gmail.com }
               - column: { name: role, value: ADMIN }
               - column: { name: is_deleted, valueNumeric: 0 }
@@ -19,7 +19,7 @@ databaseChangeLog:
             columns:
               - column: { name: id, valueNumeric: 2 }
               - column: { name: username, value: dr_hendrawan }
-              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: dr.hendrawan.spa@gmail.com }
               - column: { name: role, value: DOCTOR }
               - column: { name: is_deleted, valueNumeric: 0 }
@@ -28,7 +28,7 @@ databaseChangeLog:
             columns:
               - column: { name: id, valueNumeric: 3 }
               - column: { name: username, value: dr_siti_rahmah }
-              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: sitirahmah.pd@yahoo.co.id }
               - column: { name: role, value: DOCTOR }
               - column: { name: is_deleted, valueNumeric: 0 }
@@ -37,7 +37,7 @@ databaseChangeLog:
             columns:
               - column: { name: id, valueNumeric: 4 }
               - column: { name: username, value: budi_santoso }
-              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: budi.santoso90@gmail.com }
               - column: { name: role, value: PATIENT }
               - column: { name: is_deleted, valueNumeric: 0 }
@@ -46,7 +46,7 @@ databaseChangeLog:
             columns:
               - column: { name: id, valueNumeric: 5 }
               - column: { name: username, value: ani_wijaya }
-              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: ani.wijaya@outlook.com }
               - column: { name: role, value: PATIENT }
               - column: { name: is_deleted, valueNumeric: 0 }

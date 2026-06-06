@@ -14,6 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -59,6 +64,34 @@ public class SecurityConfig {
                 
                 // Endpoint lainnya harus Login/Autentikasi (Semua Role)
                 .anyRequest().authenticated()
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("timestamp", LocalDateTime.now().toString());
+                    body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+                    body.put("error", "Unauthorized");
+                    body.put("message", "Token JWT tidak valid, kedaluwarsa, atau tidak dikirim.");
+                    
+                    ObjectMapper mapper = new ObjectMapper();
+                    response.getWriter().write(mapper.writeValueAsString(body));
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("timestamp", LocalDateTime.now().toString());
+                    body.put("status", HttpServletResponse.SC_FORBIDDEN);
+                    body.put("error", "Forbidden");
+                    body.put("message", "Anda tidak memiliki hak akses (role) untuk mengakses resource ini.");
+                    
+                    ObjectMapper mapper = new ObjectMapper();
+                    response.getWriter().write(mapper.writeValueAsString(body));
+                })
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
