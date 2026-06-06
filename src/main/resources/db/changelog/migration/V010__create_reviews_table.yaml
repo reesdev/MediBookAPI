@@ -65,4 +65,4 @@ databaseChangeLog:
                   defaultValueComputed: CURRENT_TIMESTAMP
         - sql:
             dbms: mysql
-            sql: ALTER TABLE reviews ADD CONSTRAINT chk_rating CHECK (rating BETWEEN 1 AND 7); # Wait, rating is BETWEEN 1 AND 5. Let's fix this check constraint!
+            sql: ALTER TABLE reviews ADD CONSTRAINT chk_rating CHECK (rating BETWEEN 1 AND 5);
