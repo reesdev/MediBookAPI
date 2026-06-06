@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  # Konfigurasi Database Datasource
+  datasource:
+    url: jdbc:mysql://localhost:3306/medibook_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # Konfigurasi Liquibase Migration
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
+  # Konfigurasi JPA & Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: validate # Validasi kecocokan Entity JPA dengan skema Liquibase
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  # Konfigurasi Caching (Redis)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+
+  # Batasan Ukuran Upload File
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
+# Pengaturan Lokasi Folder Upload Berkas
+app:
+  upload:
+    dir: uploads
+  jwt:
+    secret: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+    expiration-ms: 86400000 # 24 Jam
