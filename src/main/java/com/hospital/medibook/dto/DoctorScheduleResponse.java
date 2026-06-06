@@ -1,13 +1,16 @@
 package com.hospital.medibook.dto;
 
 import lombok.*;
+import java.io.Serializable;
 import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DoctorScheduleResponse {
+public class DoctorScheduleResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private DoctorResponse doctor;
     private HospitalServiceResponse service;

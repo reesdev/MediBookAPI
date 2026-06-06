@@ -1,12 +1,15 @@
 package com.hospital.medibook.dto;
 
 import lombok.*;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DoctorResponse {
+public class DoctorResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String fullName;
     private String specialization;

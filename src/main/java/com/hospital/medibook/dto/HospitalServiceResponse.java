@@ -1,13 +1,16 @@
 package com.hospital.medibook.dto;
 
 import lombok.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HospitalServiceResponse {
+public class HospitalServiceResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String name;
     private String category;
