@@ -4,7 +4,7 @@ server:
 spring:
   # Konfigurasi Database Datasource
   datasource:
-    url: jdbc:mysql://localhost:3306/medibook_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3307/medibook_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
