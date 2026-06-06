@@ -1,5 +1,6 @@
-package com.hospital.medibook.entity;
+package com.hospital.medibook.entity.converter;
 
+import com.hospital.medibook.constant.Gender;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

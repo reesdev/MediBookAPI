@@ -1,4 +1,4 @@
-package com.hospital.medibook.entity;
+package com.hospital.medibook.constant;
 
 public enum Role {
     ADMIN,

@@ -1,5 +1,6 @@
 package com.hospital.medibook.entity;
 
+import com.hospital.medibook.constant.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
