@@ -1,0 +1,178 @@
+databaseChangeLog:
+  - changeSet:
+      id: V011-insert-seeds-data
+      author: reesky
+      comment: "Mengisi data awal untuk master users, patients, doctors, hospital_services, dan doctor_schedules"
+      changes:
+        # 1. Seeds untuk tabel users
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: username, value: reesky_admin }
+              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: email, value: reesky.it@gmail.com }
+              - column: { name: role, value: ADMIN }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: username, value: dr_hendrawan }
+              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: email, value: dr.hendrawan.spa@gmail.com }
+              - column: { name: role, value: DOCTOR }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueNumeric: 3 }
+              - column: { name: username, value: dr_siti_rahmah }
+              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: email, value: sitirahmah.pd@yahoo.co.id }
+              - column: { name: role, value: DOCTOR }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueNumeric: 4 }
+              - column: { name: username, value: budi_santoso }
+              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: email, value: budi.santoso90@gmail.com }
+              - column: { name: role, value: PATIENT }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueNumeric: 5 }
+              - column: { name: username, value: ani_wijaya }
+              - column: { name: password, value: "$2a$10$iI0T4c7j.0oGkK8iYJ6yZOpC.n2e1a3xZ6aG0L.oWl2N5.Jb5n1mG" }
+              - column: { name: email, value: ani.wijaya@outlook.com }
+              - column: { name: role, value: PATIENT }
+              - column: { name: is_deleted, valueNumeric: 0 }
+
+        # 2. Seeds untuk tabel doctors
+        - insert:
+            tableName: doctors
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: user_id, valueNumeric: 2 }
+              - column: { name: full_name, value: "dr. Hendrawan Wijaya, Sp.A" }
+              - column: { name: specialization, value: "Spesialis Anak" }
+              - column: { name: sip, value: "446/2083/SIP-D/411/2024" }
+              - column: { name: phone, value: "081234567890" }
+              - column: { name: email, value: dr.hendrawan.spa@gmail.com }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: doctors
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: user_id, valueNumeric: 3 }
+              - column: { name: full_name, value: "dr. Siti Rahmah, Sp.PD" }
+              - column: { name: specialization, value: "Spesialis Penyakit Dalam" }
+              - column: { name: sip, value: "446/1042/SIP-D/411/2023" }
+              - column: { name: phone, value: "085698765432" }
+              - column: { name: email, value: sitirahmah.pd@yahoo.co.id }
+              - column: { name: is_deleted, valueNumeric: 0 }
+
+        # 3. Seeds untuk tabel patients
+        - insert:
+            tableName: patients
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: user_id, valueNumeric: 4 }
+              - column: { name: full_name, value: "Budi Santoso" }
+              - column: { name: nik, value: "3201020304050001" }
+              - column: { name: phone, value: "081398761234" }
+              - column: { name: birth_date, value: "1990-05-15" }
+              - column: { name: gender, value: "Laki-laki" }
+              - column: { name: address, value: "Jl. Nginden Semolo No. 38, Sukolilo, Surabaya" }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: patients
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: user_id, valueNumeric: 5 }
+              - column: { name: full_name, value: "Ani Wijaya" }
+              - column: { name: nik, value: "3201020304050002" }
+              - column: { name: phone, value: "082232433695" }
+              - column: { name: birth_date, value: "1995-10-20" }
+              - column: { name: gender, value: "Perempuan" }
+              - column: { name: address, value: "Jl. Raya Bromo No. 124, Triwung Kidul, Probolinggo" }
+              - column: { name: is_deleted, valueNumeric: 0 }
+
+        # 4. Seeds untuk tabel hospital_services
+        - insert:
+            tableName: hospital_services
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: name, value: "Konsultasi Poli Anak" }
+              - column: { name: category, value: "POLIKLINIK" }
+              - column: { name: description, value: "Pemeriksaan kesehatan bayi dan anak sakit maupun konsultasi tumbuh kembang" }
+              - column: { name: base_price, valueNumeric: 150000.00 }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: hospital_services
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: name, value: "Konsultasi Poli Penyakit Dalam" }
+              - column: { name: category, value: "POLIKLINIK" }
+              - column: { name: description, value: "Pemeriksaan kesehatan organ dalam, diabetes, hipertensi, dll" }
+              - column: { name: base_price, valueNumeric: 180000.00 }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: hospital_services
+            columns:
+              - column: { name: id, valueNumeric: 3 }
+              - column: { name: name, value: "Cek Darah Lengkap + Kolesterol" }
+              - column: { name: category, value: "LAB" }
+              - column: { name: description, value: "Pemeriksaan laboratorium sel darah lengkap, kolesterol total, asam urat dan gula darah" }
+              - column: { name: base_price, valueNumeric: 220000.00 }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: hospital_services
+            columns:
+              - column: { name: id, valueNumeric: 4 }
+              - column: { name: name, value: "Rontgen Thorax AP" }
+              - column: { name: category, value: "RAD" }
+              - column: { name: description, value: "Pemeriksaan radiologi foto dada/paru-paru" }
+              - column: { name: base_price, valueNumeric: 250000.00 }
+              - column: { name: is_deleted, valueNumeric: 0 }
+
+        # 5. Seeds untuk tabel doctor_schedules
+        - insert:
+            tableName: doctor_schedules
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: doctor_id, valueNumeric: 1 }
+              - column: { name: service_id, valueNumeric: 1 }
+              - column: { name: day_of_week, valueNumeric: 1 }
+              - column: { name: start_time, value: "09:00:00" }
+              - column: { name: end_time, value: "12:00:00" }
+              - column: { name: max_patients, valueNumeric: 10 }
+              - column: { name: booked_count, valueNumeric: 0 }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: doctor_schedules
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: doctor_id, valueNumeric: 1 }
+              - column: { name: service_id, valueNumeric: 1 }
+              - column: { name: day_of_week, valueNumeric: 3 }
+              - column: { name: start_time, value: "14:00:00" }
+              - column: { name: end_time, value: "17:00:00" }
+              - column: { name: max_patients, valueNumeric: 10 }
+              - column: { name: booked_count, valueNumeric: 0 }
+              - column: { name: is_deleted, valueNumeric: 0 }
+        - insert:
+            tableName: doctor_schedules
+            columns:
+              - column: { name: id, valueNumeric: 3 }
+              - column: { name: doctor_id, valueNumeric: 2 }
+              - column: { name: service_id, valueNumeric: 2 }
+              - column: { name: day_of_week, valueNumeric: 2 }
+              - column: { name: start_time, value: "10:00:00" }
+              - column: { name: end_time, value: "13:00:00" }
+              - column: { name: max_patients, valueNumeric: 15 }
+              - column: { name: booked_count, valueNumeric: 0 }
+              - column: { name: is_deleted, valueNumeric: 0 }
