@@ -2,7 +2,6 @@ package com.hospital.medibook.controller;
 
 import com.hospital.medibook.constant.Role;
 import com.hospital.medibook.constant.ServiceCategory;
-import com.hospital.medibook.controller.api.AdminApi;
 import com.hospital.medibook.dto.DoctorCreateRequest;
 import com.hospital.medibook.dto.ScheduleCreateRequest;
 import com.hospital.medibook.dto.ServiceCreateRequest;
@@ -16,26 +15,31 @@ import com.hospital.medibook.repository.DoctorRepository;
 import com.hospital.medibook.repository.DoctorScheduleRepository;
 import com.hospital.medibook.repository.HospitalServiceRepository;
 import com.hospital.medibook.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
-public class AdminController implements AdminApi {
+public class AdminController {
 
     private final DoctorRepository doctorRepository;
     private final HospitalServiceRepository serviceRepository;
     private final DoctorScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-    @Override
     @Transactional
-    public ResponseEntity<Map<String, Object>> createDoctor(DoctorCreateRequest request) {
+    @PostMapping("/doctors")
+    public ResponseEntity<Map<String, Object>> createDoctor(@Valid @RequestBody DoctorCreateRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan dengan ID: " + request.getUserId()));
 
@@ -66,8 +70,8 @@ public class AdminController implements AdminApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Override
-    public ResponseEntity<Map<String, Object>> createService(ServiceCreateRequest request) {
+    @PostMapping("/services")
+    public ResponseEntity<Map<String, Object>> createService(@Valid @RequestBody ServiceCreateRequest request) {
         ServiceCategory category;
         try {
             category = ServiceCategory.valueOf(request.getCategory().toUpperCase());
@@ -92,8 +96,8 @@ public class AdminController implements AdminApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Override
-    public ResponseEntity<Map<String, Object>> createSchedule(ScheduleCreateRequest request) {
+    @PostMapping("/schedules")
+    public ResponseEntity<Map<String, Object>> createSchedule(@Valid @RequestBody ScheduleCreateRequest request) {
         Doctor doctor = doctorRepository.findById(request.getDoctorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Dokter tidak ditemukan dengan ID: " + request.getDoctorId()));
 

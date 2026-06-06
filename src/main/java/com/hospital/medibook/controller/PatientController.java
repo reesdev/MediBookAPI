@@ -1,6 +1,5 @@
 package com.hospital.medibook.controller;
 
-import com.hospital.medibook.controller.api.PatientApi;
 import com.hospital.medibook.dto.BookingResponse;
 import com.hospital.medibook.entity.Patient;
 import com.hospital.medibook.entity.User;
@@ -11,20 +10,23 @@ import com.hospital.medibook.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api/patient")
 @RequiredArgsConstructor
-public class PatientController implements PatientApi {
+public class PatientController {
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
 
-    @Override
+    @GetMapping("/bookings")
     public ResponseEntity<List<BookingResponse>> getMyBookings() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)

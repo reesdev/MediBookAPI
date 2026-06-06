@@ -1,6 +1,5 @@
 package com.hospital.medibook.controller;
 
-import com.hospital.medibook.controller.api.CatalogApi;
 import com.hospital.medibook.dto.DoctorResponse;
 import com.hospital.medibook.dto.DoctorScheduleResponse;
 import com.hospital.medibook.dto.HospitalServiceResponse;
@@ -10,19 +9,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
-public class CatalogController implements CatalogApi {
+public class CatalogController {
 
     private final CatalogService catalogService;
 
-    @Override
-    public ResponseEntity<Map<String, Object>> getDoctors(int page, int size, String specialization, String search) {
+    @GetMapping("/doctors")
+    public ResponseEntity<Map<String, Object>> getDoctors(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "specialization", required = false) String specialization,
+            @RequestParam(value = "search", required = false) String search) {
         Pageable pageable = PageRequest.of(page, size);
         Page<DoctorResponse> doctorPage = catalogService.searchDoctors(specialization, search, pageable);
 
@@ -35,13 +42,13 @@ public class CatalogController implements CatalogApi {
         return ResponseEntity.ok(response);
     }
 
-    @Override
+    @GetMapping("/services")
     public ResponseEntity<List<HospitalServiceResponse>> getServices() {
         List<HospitalServiceResponse> services = catalogService.getActiveServices();
         return ResponseEntity.ok(services);
     }
 
-    @Override
+    @GetMapping("/schedules")
     public ResponseEntity<List<DoctorScheduleResponse>> getSchedules() {
         List<DoctorScheduleResponse> schedules = catalogService.getActiveSchedules();
         return ResponseEntity.ok(schedules);
