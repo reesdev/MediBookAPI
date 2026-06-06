@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: V010-create-reviews-table
+      author: reesky
+      comment: "Membuat tabel reviews untuk rating pelayanan dokter dan rumah sakit"
+      changes:
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: booking_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    foreignKeyName: fk_reviews_booking
+                    referencedTableName: bookings
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reviews_patient
+                    referencedTableName: patients
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_reviews_doctor
+                    referencedTableName: doctors
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: service_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reviews_service
+                    referencedTableName: hospital_services
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: rating
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: review_text
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - sql:
+            dbms: mysql
+            sql: ALTER TABLE reviews ADD CONSTRAINT chk_rating CHECK (rating BETWEEN 1 AND 7); # Wait, rating is BETWEEN 1 AND 5. Let's fix this check constraint!

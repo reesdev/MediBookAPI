@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: V009-create-medical-documents-table
+      author: reesky
+      comment: "Membuat tabel medical_documents untuk menyimpan berkas digital"
+      changes:
+        - createTable:
+            tableName: medical_documents
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: booking_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_documents_booking
+                    referencedTableName: bookings
+                    referencedColumnNames: id
+                    deleteCascade: false
+              - column:
+                  name: file_path
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: original_file_name
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_size
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: uploaded_by
+                  type: ENUM('PATIENT', 'DOCTOR')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: document_type
+                  type: ENUM('REFERRAL_LETTER', 'PRESCRIPTION', 'LAB_RESULT')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
