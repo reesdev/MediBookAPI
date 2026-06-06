@@ -26,7 +26,7 @@ INSERT INTO hospital_services (id, name, category, description, base_price, is_d
 (4, 'Rontgen Thorax AP', 'RAD', 'Pemeriksaan radiologi foto dada/paru-paru', 250000.00, 0);
 
 -- insert jadwal praktek dokter
-INSERT INTO doctor_schedules (id, doctor_id, service_id, day_of_week, start_time, end_time, max_patients, is_deleted) VALUES
-(1, 1, 1, 1, '09:00:00', '12:00:00', 10, 0), -- dr. Hendrawan - Poli Anak (Senin)
-(2, 1, 1, 3, '14:00:00', '17:00:00', 10, 0), -- dr. Hendrawan - Poli Anak (Rabu)
-(3, 2, 2, 2, '10:00:00', '13:00:00', 15, 0); -- dr. Siti Rahmah - Poli Penyakit Dalam (Selasa)
+INSERT INTO doctor_schedules (id, doctor_id, service_id, day_of_week, start_time, end_time, max_patients, booked_count, is_deleted) VALUES
+(1, 1, 1, 1, '09:00:00', '12:00:00', 10, 0, 0), -- dr. Hendrawan - Poli Anak (Senin)
+(2, 1, 1, 3, '14:00:00', '17:00:00', 10, 0, 0), -- dr. Hendrawan - Poli Anak (Rabu)
+(3, 2, 2, 2, '10:00:00', '13:00:00', 15, 0, 0); -- dr. Siti Rahmah - Poli Penyakit Dalam (Selasa)
