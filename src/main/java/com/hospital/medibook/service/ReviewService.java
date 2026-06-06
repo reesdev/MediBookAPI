@@ -13,28 +13,20 @@ import com.hospital.medibook.repository.BookingRepository;
 import com.hospital.medibook.repository.PatientRepository;
 import com.hospital.medibook.repository.ReviewRepository;
 import com.hospital.medibook.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
-
-    public ReviewService(ReviewRepository reviewRepository,
-                         BookingRepository bookingRepository,
-                         UserRepository userRepository,
-                         PatientRepository patientRepository) {
-        this.reviewRepository = reviewRepository;
-        this.bookingRepository = bookingRepository;
-        this.userRepository = userRepository;
-        this.patientRepository = patientRepository;
-    }
 
     @Transactional
     public ReviewResponse submitReview(Long bookingId, ReviewRequest request) {

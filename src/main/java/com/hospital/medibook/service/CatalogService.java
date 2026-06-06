@@ -9,6 +9,7 @@ import com.hospital.medibook.entity.HospitalService;
 import com.hospital.medibook.repository.DoctorRepository;
 import com.hospital.medibook.repository.DoctorScheduleRepository;
 import com.hospital.medibook.repository.HospitalServiceRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,19 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CatalogService {
 
     private final DoctorRepository doctorRepository;
     private final HospitalServiceRepository serviceRepository;
     private final DoctorScheduleRepository scheduleRepository;
-
-    public CatalogService(DoctorRepository doctorRepository,
-                          HospitalServiceRepository serviceRepository,
-                          DoctorScheduleRepository scheduleRepository) {
-        this.doctorRepository = doctorRepository;
-        this.serviceRepository = serviceRepository;
-        this.scheduleRepository = scheduleRepository;
-    }
 
     @Cacheable(value = "doctors", key = "#specialization + '-' + #search + '-' + #pageable.pageNumber")
     public Page<DoctorResponse> searchDoctors(String specialization, String search, Pageable pageable) {

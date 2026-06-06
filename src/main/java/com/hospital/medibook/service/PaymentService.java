@@ -11,6 +11,7 @@ import com.hospital.medibook.exception.ResourceNotFoundException;
 import com.hospital.medibook.repository.BookingEventRepository;
 import com.hospital.medibook.repository.BookingRepository;
 import com.hospital.medibook.repository.TransactionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -18,19 +19,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
     private final BookingRepository bookingRepository;
     private final TransactionRepository transactionRepository;
     private final BookingEventRepository eventRepository;
-
-    public PaymentService(BookingRepository bookingRepository,
-                          TransactionRepository transactionRepository,
-                          BookingEventRepository eventRepository) {
-        this.bookingRepository = bookingRepository;
-        this.transactionRepository = transactionRepository;
-        this.eventRepository = eventRepository;
-    }
 
     @Transactional
     public PaymentResponse payBooking(Long bookingId, PaymentRequest request) {

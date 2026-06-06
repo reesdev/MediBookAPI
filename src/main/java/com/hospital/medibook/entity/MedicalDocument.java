@@ -44,5 +44,5 @@ public class MedicalDocument {
     private DocumentType documentType;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
 }

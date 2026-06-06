@@ -41,5 +41,5 @@ public class Patient {
     private String address;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    @Builder.Default private boolean isDeleted = false;
 }

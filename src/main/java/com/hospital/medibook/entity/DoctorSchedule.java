@@ -38,8 +38,8 @@ public class DoctorSchedule {
     private int maxPatients;
 
     @Column(name = "booked_count", nullable = false)
-    private int bookedCount = 0;
+    @Builder.Default private int bookedCount = 0;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    @Builder.Default private boolean isDeleted = false;
 }

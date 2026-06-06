@@ -40,5 +40,5 @@ public class Review {
     private String reviewText;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
 }

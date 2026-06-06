@@ -36,5 +36,5 @@ public class Doctor {
     private String email;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    @Builder.Default private boolean isDeleted = false;
 }

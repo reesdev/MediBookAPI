@@ -32,5 +32,5 @@ public class HospitalService {
     private BigDecimal basePrice;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    @Builder.Default private boolean isDeleted = false;
 }

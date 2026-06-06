@@ -14,4 +14,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean existsByPatientIdAndScheduleIdAndBookingDate(Long patientId, Long scheduleId, LocalDate bookingDate);
     List<Booking> findByStatusAndCreatedAtBefore(com.hospital.medibook.constant.BookingStatus status, java.time.LocalDateTime time);
     List<Booking> findByDoctorIdAndBookingDateOrderByQueueNumberAsc(Long doctorId, LocalDate bookingDate);
+    List<Booking> findByPatientIdOrderByCreatedAtDesc(Long patientId);
 }

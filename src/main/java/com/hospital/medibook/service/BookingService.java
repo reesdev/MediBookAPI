@@ -8,6 +8,7 @@ import com.hospital.medibook.exception.BadRequestException;
 import com.hospital.medibook.exception.ConflictException;
 import com.hospital.medibook.exception.ResourceNotFoundException;
 import com.hospital.medibook.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
 public class BookingService {
 
     private final BookingRepository bookingRepository;
@@ -34,26 +36,6 @@ public class BookingService {
     private final BookingEventRepository eventRepository;
     private final MedicalDocumentRepository documentRepository;
     private final StringRedisTemplate redisTemplate;
-
-    public BookingService(BookingRepository bookingRepository,
-                          DoctorScheduleRepository scheduleRepository,
-                          DoctorRepository doctorRepository,
-                          HospitalServiceRepository serviceRepository,
-                          UserRepository userRepository,
-                          PatientRepository patientRepository,
-                          BookingEventRepository eventRepository,
-                          MedicalDocumentRepository documentRepository,
-                          StringRedisTemplate redisTemplate) {
-        this.bookingRepository = bookingRepository;
-        this.scheduleRepository = scheduleRepository;
-        this.doctorRepository = doctorRepository;
-        this.serviceRepository = serviceRepository;
-        this.userRepository = userRepository;
-        this.patientRepository = patientRepository;
-        this.eventRepository = eventRepository;
-        this.documentRepository = documentRepository;
-        this.redisTemplate = redisTemplate;
-    }
 
     @Transactional
     public BookingResponse createBooking(BookingRequest request) {

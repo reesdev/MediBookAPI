@@ -12,6 +12,7 @@ import com.hospital.medibook.exception.BadRequestException;
 import com.hospital.medibook.exception.ConflictException;
 import com.hospital.medibook.repository.PatientRepository;
 import com.hospital.medibook.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -27,18 +29,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-
-    public AuthService(UserRepository userRepository,
-                       PatientRepository patientRepository,
-                       PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager,
-                       JwtUtils jwtUtils) {
-        this.userRepository = userRepository;
-        this.patientRepository = patientRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-    }
 
     @Transactional
     public User register(RegisterRequest request) {

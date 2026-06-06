@@ -13,6 +13,7 @@ import com.hospital.medibook.repository.BookingEventRepository;
 import com.hospital.medibook.repository.BookingRepository;
 import com.hospital.medibook.repository.DoctorRepository;
 import com.hospital.medibook.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DoctorService {
 
     private final BookingRepository bookingRepository;
@@ -29,17 +31,7 @@ public class DoctorService {
     private final UserRepository userRepository;
     private final BookingEventRepository eventRepository;
 
-    public DoctorService(BookingRepository bookingRepository,
-                         DoctorRepository doctorRepository,
-                         UserRepository userRepository,
-                         BookingEventRepository eventRepository) {
-        this.bookingRepository = bookingRepository;
-        this.doctorRepository = doctorRepository;
-        this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
-    }
-
-    public List<BookingResponse> getTodayBookings() {
+    public List<BookingResponse> getBookingsByDate(LocalDate date) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan."));
@@ -47,12 +39,16 @@ public class DoctorService {
                 .orElseThrow(() -> new ResourceNotFoundException("Profil dokter tidak ditemukan."));
 
         List<Booking> bookings = bookingRepository.findByDoctorIdAndBookingDateOrderByQueueNumberAsc(
-                doctor.getId(), LocalDate.now()
+                doctor.getId(), date
         );
 
         return bookings.stream()
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<BookingResponse> getTodayBookings() {
+        return getBookingsByDate(LocalDate.now());
     }
 
     @Transactional

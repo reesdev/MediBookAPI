@@ -8,6 +8,7 @@ import com.hospital.medibook.entity.DoctorSchedule;
 import com.hospital.medibook.repository.BookingEventRepository;
 import com.hospital.medibook.repository.BookingRepository;
 import com.hospital.medibook.repository.DoctorScheduleRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SchedulerService {
 
     private static final Logger log = LoggerFactory.getLogger(SchedulerService.class);
@@ -25,14 +27,6 @@ public class SchedulerService {
     private final BookingRepository bookingRepository;
     private final DoctorScheduleRepository scheduleRepository;
     private final BookingEventRepository eventRepository;
-
-    public SchedulerService(BookingRepository bookingRepository,
-                            DoctorScheduleRepository scheduleRepository,
-                            BookingEventRepository eventRepository) {
-        this.bookingRepository = bookingRepository;
-        this.scheduleRepository = scheduleRepository;
-        this.eventRepository = eventRepository;
-    }
 
     // Berjalan setiap 60 detik (1 menit)
     @Scheduled(fixedRate = 60000)
