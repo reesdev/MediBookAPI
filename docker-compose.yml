@@ -2,11 +2,9 @@ version: '3.8'
 
 services:
   medibook-app:
-    # Nama image akan diganti otomatis oleh skrip deploy.yml pada saat CI/CD
     image: YOUR_DOCKERHUB_USERNAME/medibook-api:latest
     container_name: student1_medibook
     ports:
-      # Port VPS eksternal (9001) diarahkan ke port internal Spring Boot (3090)
       - "9001:3090"
     env_file:
       - .env
@@ -14,7 +12,6 @@ services:
     networks:
       - classroom_net
 
-# Menghubungkan ke jaringan yang sama dengan MySQL ('classroom_mysql') yang sudah ada di VPS
 networks:
   classroom_net:
     name: classroom_classroom_net
