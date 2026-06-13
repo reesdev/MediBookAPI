@@ -39,14 +39,14 @@ public class BookingService {
 
     @Transactional
     public BookingResponse createBooking(BookingRequest request) {
-        // 1. Dapatkan pasien yang sedang terautentikasi
+        // Dapatkan identitas pasien terautentikasi
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan"));
         Patient patient = patientRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Profil pasien tidak ditemukan"));
 
-        // 2. Idempotency Lock dengan Redis
+        // Cegah pendaftaran ganda menggunakan Redis lock
         String lockKey = "idempotency:booking:patient:" + patient.getId();
         Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "1", 10, TimeUnit.SECONDS);
         if (Boolean.FALSE.equals(isLocked)) {
@@ -54,39 +54,65 @@ public class BookingService {
         }
 
         try {
-            // 3. Validasi Tanggal Booking (Minimal hari ini atau hari esok)
+            // Cek validitas tanggal jadwal
             if (request.getBookingDate().isBefore(LocalDate.now())) {
                 throw new BadRequestException("Tanggal pendaftaran tidak boleh di masa lalu.");
             }
 
-            // 4. Lakukan Pessimistic Lock pada Jadwal Dokter
+            // Validasi Double Booking (Pasien tidak boleh mendaftar jadwal dokter yang sama di hari yang sama)
+            boolean isAlreadyBooked = bookingRepository.existsByPatientIdAndScheduleIdAndBookingDate(
+                    patient.getId(), request.getScheduleId(), request.getBookingDate());
+            if (isAlreadyBooked) {
+                throw new ConflictException("Anda sudah pernah mendaftar pada jadwal dokter ini di tanggal tersebut.");
+            }
+
+            // Kunci baris jadwal di database (Pessimistic Lock)
             DoctorSchedule schedule = scheduleRepository.findByIdForUpdate(request.getScheduleId())
                     .orElseThrow(() -> new ResourceNotFoundException("Jadwal dokter tidak ditemukan atau sudah dihapus."));
 
-            // 5. Validasi Kecocokan Jadwal dengan Dokter & Layanan
-            if (!schedule.getDoctor().getId().equals(request.getDoctorId())) {
-                throw new BadRequestException("Jadwal tidak cocok dengan dokter yang dipilih.");
-            }
-            if (!schedule.getService().getId().equals(request.getServiceId())) {
-                throw new BadRequestException("Jadwal tidak cocok dengan layanan yang dipilih.");
+            // Validasi kecocokan hari (DayOfWeek)
+            if (request.getBookingDate().getDayOfWeek().getValue() != schedule.getDayOfWeek()) {
+                throw new BadRequestException("Tanggal yang dipilih tidak sesuai dengan hari praktik dokter.");
             }
 
-            // 6. Validasi Sisa Kuota
-            if (schedule.getBookedCount() >= schedule.getMaxPatients()) {
-                throw new ConflictException("Kuota dokter untuk jadwal yang dipilih sudah penuh.");
+            // Validasi bookingTime
+            if (request.getBookingTime() == null) {
+                throw new BadRequestException("Jam kunjungan wajib dipilih.");
+            }
+            if (request.getBookingTime().isBefore(schedule.getStartTime()) || request.getBookingTime().isAfter(schedule.getEndTime()) || request.getBookingTime().equals(schedule.getEndTime())) {
+                throw new BadRequestException("Jam kunjungan di luar jadwal praktek dokter.");
+            }
+            if (request.getBookingTime().getMinute() != 0) {
+                throw new BadRequestException("Jam kunjungan harus pas per jam (misal 09:00, bukan 09:30).");
             }
 
-            // 7. Hitung Nomor Antrean
-            int queueNumber = schedule.getBookedCount() + 1;
-            schedule.setBookedCount(queueNumber);
-            scheduleRepository.save(schedule);
+            // Jika pendaftaran untuk hari ini, pastikan jam kunjungan belum terlewat
+            if (request.getBookingDate().isEqual(LocalDate.now())) {
+                if (java.time.LocalTime.now().isAfter(request.getBookingTime())) {
+                    throw new BadRequestException("Waktu untuk slot jam " + request.getBookingTime() + " hari ini sudah lewat.");
+                }
+            }
 
-            // 8. Generate Kode Booking Unik: BK-yyyyMMdd-XXXX (XXXX dari serial queue/random)
+            // Cek apakah slot jam ini sudah diambil orang lain
+            boolean isSlotTaken = bookingRepository.existsByScheduleIdAndBookingDateAndBookingTimeAndStatusNot(
+                    schedule.getId(), request.getBookingDate(), request.getBookingTime(), BookingStatus.CANCELLED);
+            if (isSlotTaken) {
+                throw new ConflictException("Mohon maaf, slot jam " + request.getBookingTime() + " sudah di-booking pasien lain.");
+            }
+
+            // Hitung kuota dinamis berdasarkan tanggal spesifik (Abaikan yang sudah dicancel)
+            int currentBooked = bookingRepository.countByScheduleIdAndBookingDateAndStatusNot(
+                    schedule.getId(), request.getBookingDate(), BookingStatus.CANCELLED);
+
+            // Hitung nomor antrean selanjutnya
+            int queueNumber = currentBooked + 1;
+
+            // Generate Kode Booking
             String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String randomPart = String.format("%04d", (int)(Math.random() * 10000));
             String bookingCode = "BK-" + datePart + "-" + randomPart;
 
-            // 9. Buat Entitas Booking
+            // Simpan entitas pendaftaran
             Booking booking = Booking.builder()
                     .bookingCode(bookingCode)
                     .patient(patient)
@@ -94,6 +120,7 @@ public class BookingService {
                     .doctor(schedule.getDoctor())
                     .schedule(schedule)
                     .bookingDate(request.getBookingDate())
+                    .bookingTime(request.getBookingTime())
                     .queueNumber(queueNumber)
                     .status(BookingStatus.PENDING_PAYMENT)
                     .complaint(request.getComplaint())
@@ -103,7 +130,7 @@ public class BookingService {
                     .build();
             Booking savedBooking = bookingRepository.save(booking);
 
-            // 10. Catat Booking Event
+            // Catat riwayat status (Audit log)
             BookingEvent event = BookingEvent.builder()
                     .booking(savedBooking)
                     .status(BookingStatus.PENDING_PAYMENT.name())
@@ -114,7 +141,7 @@ public class BookingService {
                     .build();
             eventRepository.save(event);
 
-            // 11. Tangani Upload File Rujukan (Jika Ada)
+            // Simpan berkas rujukan jika diunggah
             MultipartFile file = request.getReferralFile();
             if (file != null && !file.isEmpty()) {
                 handleFileUpload(savedBooking, file);
@@ -127,7 +154,10 @@ public class BookingService {
                     .bookingDate(savedBooking.getBookingDate())
                     .status(savedBooking.getStatus().name())
                     .totalFee(savedBooking.getTotalFee())
-                    .message("Booking berhasil dibuat. Harap lakukan pembayaran dalam waktu 15 menit.")
+                    .message("Booking berhasil dibuat. Harap lakukan pembayaran dalam waktu 1 menit.")
+                    .createdAt(savedBooking.getCreatedAt())
+                    .serviceName(savedBooking.getService().getName())
+                    .doctorName(savedBooking.getDoctor().getFullName())
                     .build();
 
         } finally {
@@ -136,27 +166,51 @@ public class BookingService {
         }
     }
 
+    public java.util.List<String> getAvailableTimeSlots(String scheduleId, LocalDate date) {
+        DoctorSchedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Jadwal tidak ditemukan"));
+
+        if (date.getDayOfWeek().getValue() != schedule.getDayOfWeek()) {
+            return java.util.Collections.emptyList();
+        }
+
+        java.util.List<java.time.LocalTime> takenSlots = bookingRepository.findBookedTimes(scheduleId, date);
+        java.util.List<String> available = new java.util.ArrayList<>();
+
+        java.time.LocalTime current = schedule.getStartTime();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        boolean isToday = date.isEqual(LocalDate.now());
+
+        while (current.isBefore(schedule.getEndTime())) {
+            // Jika hari ini dan jam slot sudah lewat, skip
+            if (isToday && now.isAfter(current)) {
+                current = current.plusHours(1);
+                continue;
+            }
+
+            // Cek jika slot belum diambil
+            if (!takenSlots.contains(current)) {
+                available.add(current.toString());
+            }
+
+            current = current.plusHours(1);
+        }
+
+        return available;
+    }
+
     private void handleFileUpload(Booking booking, MultipartFile file) {
         try {
-            // Validasi jenis file (PDF atau Gambar)
             String contentType = file.getContentType();
             if (contentType == null || (!contentType.equals("application/pdf") && 
                                         !contentType.startsWith("image/"))) {
                 throw new BadRequestException("Hanya file PDF atau gambar yang diperbolehkan untuk dokumen rujukan.");
             }
-
-            // Buat folder uploads jika belum ada
             File uploadDir = new File("uploads");
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            // Generate nama file unik
+            if (!uploadDir.exists()) uploadDir.mkdirs();
             String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             File destFile = new File(uploadDir, uniqueFileName);
             file.transferTo(destFile);
-
-            // Simpan metadata ke tabel medical_documents
             MedicalDocument document = MedicalDocument.builder()
                     .booking(booking)
                     .filePath("uploads/" + uniqueFileName)
@@ -168,7 +222,6 @@ public class BookingService {
                     .createdAt(LocalDateTime.now())
                     .build();
             documentRepository.save(document);
-
         } catch (IOException e) {
             throw new RuntimeException("Gagal mengunggah file dokumen rujukan.", e);
         }

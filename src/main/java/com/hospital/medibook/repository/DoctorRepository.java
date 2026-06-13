@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    Optional<Doctor> findByUserId(Long userId);
+public interface DoctorRepository extends JpaRepository<Doctor, String> {
+    Optional<Doctor> findByUserId(String userId);
     boolean existsBySip(String sip);
 
     @Query("SELECT d FROM Doctor d WHERE d.isDeleted = false " +

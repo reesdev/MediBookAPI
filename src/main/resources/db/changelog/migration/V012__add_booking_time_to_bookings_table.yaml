@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-booking-time-column
+      author: antigravity
+      changes:
+        - addColumn:
+            tableName: bookings
+            columns:
+              - column:
+                  name: booking_time
+                  type: time
+                  constraints:
+                    nullable: false

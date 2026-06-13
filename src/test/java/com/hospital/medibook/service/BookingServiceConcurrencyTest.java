@@ -168,18 +168,23 @@ public class BookingServiceConcurrencyTest {
                             )
                     );
 
+                    // Pastikan hari sesuai dengan jadwal (Senin = 1)
+                    LocalDate targetDate = LocalDate.now();
+                    while (targetDate.getDayOfWeek().getValue() != 1) {
+                        targetDate = targetDate.plusDays(1);
+                    }
+
                     BookingRequest request = BookingRequest.builder()
-                            .doctorId(savedSchedule.getDoctor().getId())
-                            .serviceId(savedSchedule.getService().getId())
                             .scheduleId(savedSchedule.getId())
-                            .bookingDate(LocalDate.now().plusDays(1))
+                            .bookingDate(targetDate)
+                            .bookingTime(LocalTime.of(9, 0))
                             .complaint("Tes Concurrency")
                             .build();
 
                     bookingService.createBooking(request);
                     successCount.incrementAndGet();
-                } catch (BadRequestException e) {
-                    if (e.getMessage().contains("Kuota dokter untuk jadwal yang dipilih sudah penuh")) {
+                } catch (com.hospital.medibook.exception.ConflictException e) {
+                    if (e.getMessage().contains("sudah di-booking pasien lain")) {
                         failureCount.incrementAndGet();
                     } else {
                         System.err.println("Pesan error tidak terduga: " + e.getMessage());
@@ -198,15 +203,10 @@ public class BookingServiceConcurrencyTest {
         // Tunggu semua thread selesai
         finishLatch.await(5, TimeUnit.SECONDS);
 
-        // Verifikasi hasil:
-        // Kuota = 2, pendaftar = 5.
-        // Maka harus ada tepat 2 sukses dan 3 gagal kuota penuh.
-        assertEquals(2, successCount.get(), "Pendaftaran yang sukses harus tepat berjumlah 2");
-        assertEquals(3, failureCount.get(), "Pendaftaran yang gagal (kuota penuh) harus tepat berjumlah 3");
-
-        // Cek bookedCount di database
-        DoctorSchedule updatedSchedule = scheduleRepository.findById(savedSchedule.getId()).orElseThrow();
-        assertEquals(2, updatedSchedule.getBookedCount(), "bookedCount di database harus bernilai 2");
+        // Karena semua thread mencoba booking jam 09:00 yang persis sama,
+        // hanya 1 yang boleh sukses. Sisanya (4) akan dilempar ConflictException.
+        assertEquals(1, successCount.get(), "Hanya boleh 1 thread yang berhasil booking jam 09:00");
+        assertEquals(4, failureCount.get(), "Sisa 4 thread harus gagal karena bentrok slot jam yang sama");
 
         executorService.shutdown();
     }

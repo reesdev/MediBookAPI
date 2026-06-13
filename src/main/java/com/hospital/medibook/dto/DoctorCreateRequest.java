@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class DoctorCreateRequest {
     @NotNull(message = "User ID wajib diisi")
-    private Long userId;
+    private String userId;
 
     @NotBlank(message = "Nama lengkap wajib diisi")
     private String fullName;

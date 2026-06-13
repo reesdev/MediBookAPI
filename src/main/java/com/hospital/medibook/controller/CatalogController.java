@@ -3,6 +3,7 @@ package com.hospital.medibook.controller;
 import com.hospital.medibook.dto.DoctorResponse;
 import com.hospital.medibook.dto.DoctorScheduleResponse;
 import com.hospital.medibook.dto.HospitalServiceResponse;
+import com.hospital.medibook.dto.PageResponse;
 import com.hospital.medibook.service.CatalogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,15 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "5. Catalog API", description = "Endpoint publik untuk melihat jadwal, dokter, dan layanan")
 public class CatalogController {
 
     private final CatalogService catalogService;
 
     @GetMapping("/doctors")
-    public ResponseEntity<Map<String, Object>> getDoctors(
+    public ResponseEntity<PageResponse<DoctorResponse>> getDoctors(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "specialization", required = false) String specialization,
@@ -33,11 +37,12 @@ public class CatalogController {
         Pageable pageable = PageRequest.of(page, size);
         Page<DoctorResponse> doctorPage = catalogService.searchDoctors(specialization, search, pageable);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("content", doctorPage.getContent());
-        response.put("currentPage", doctorPage.getNumber());
-        response.put("totalPages", doctorPage.getTotalPages());
-        response.put("totalItems", doctorPage.getTotalElements());
+        PageResponse<DoctorResponse> response = PageResponse.<DoctorResponse>builder()
+                .content(doctorPage.getContent())
+                .currentPage(doctorPage.getNumber())
+                .totalPages(doctorPage.getTotalPages())
+                .totalItems(doctorPage.getTotalElements())
+                .build();
 
         return ResponseEntity.ok(response);
     }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PatientRepository extends JpaRepository<Patient, Long> {
-    Optional<Patient> findByUserId(Long userId);
+public interface PatientRepository extends JpaRepository<Patient, String> {
+    Optional<Patient> findByUserId(String userId);
     boolean existsByNik(String nik);
 }

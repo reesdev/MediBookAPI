@@ -11,7 +11,7 @@ import java.time.LocalTime;
 public class DoctorScheduleResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private String id;
     private DoctorResponse doctor;
     private HospitalServiceResponse service;
     private Integer dayOfWeek;

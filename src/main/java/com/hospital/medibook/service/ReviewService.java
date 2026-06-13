@@ -29,34 +29,34 @@ public class ReviewService {
     private final PatientRepository patientRepository;
 
     @Transactional
-    public ReviewResponse submitReview(Long bookingId, ReviewRequest request) {
-        // 1. Dapatkan data pasien yang terautentikasi
+    public ReviewResponse submitReview(String bookingId, ReviewRequest request) {
+        // Identifikasi pasien
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan."));
         Patient patient = patientRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Profil pasien tidak ditemukan."));
 
-        // 2. Ambil data Booking
+        // Cari pendaftaran terkait
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking tidak ditemukan."));
 
-        // 3. Validasi Kepemilikan Booking
+        // Pastikan pendaftaran milik pasien ini
         if (!booking.getPatient().getId().equals(patient.getId())) {
             throw new BadRequestException("Anda tidak berhak memberikan ulasan untuk pendaftaran ini.");
         }
 
-        // 4. Validasi Status Booking (Harus COMPLETED)
+        // Review hanya bisa dilakukan setelah selesai
         if (booking.getStatus() != BookingStatus.COMPLETED) {
             throw new BadRequestException("Ulasan hanya dapat diberikan setelah status pelayanan selesai (COMPLETED).");
         }
 
-        // 5. Validasi Ulasan Duplikat
+        // Cek apakah sudah pernah memberikan review
         if (reviewRepository.existsByBookingId(bookingId)) {
             throw new BadRequestException("Anda sudah memberikan ulasan untuk pendaftaran ini.");
         }
 
-        // 6. Buat dan Simpan Review
+        // Simpan ulasan ke database
         Review review = Review.builder()
                 .booking(booking)
                 .patient(patient)

@@ -21,3 +21,7 @@ databaseChangeLog:
       file: db/changelog/migration/V010__create_reviews_table.yaml
   - include:
       file: db/changelog/migration/V011__insert_seeds.yaml
+  - include:
+      file: db/changelog/migration/V012__add_booking_time_to_bookings_table.yaml
+  - include:
+      file: db/changelog/migration/V013__add_diagnosis_to_bookings_table.yaml

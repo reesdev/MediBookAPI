@@ -2,13 +2,13 @@ databaseChangeLog:
   - changeSet:
       id: V011-insert-seeds-data
       author: reesky
-      comment: "Mengisi data awal untuk master users, patients, doctors, hospital_services, dan doctor_schedules"
+      comment: "Mengisi data awal untuk master users, patients, doctors, hospital_services, dan doctor_schedules dengan MD5 Hash IDs"
       changes:
         # 1. Seeds untuk tabel users
         - insert:
             tableName: users
             columns:
-              - column: { name: id, valueNumeric: 1 }
+              - column: { name: id, value: "c4ca4238a0b923820dcc509a6f75849b" }
               - column: { name: username, value: reesky_admin }
               - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: reesky.it@gmail.com }
@@ -17,7 +17,7 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
-              - column: { name: id, valueNumeric: 2 }
+              - column: { name: id, value: "c81e728d9d4c2f636f067f89cc14862c" }
               - column: { name: username, value: dr_hendrawan }
               - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: dr.hendrawan.spa@gmail.com }
@@ -26,7 +26,7 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
-              - column: { name: id, valueNumeric: 3 }
+              - column: { name: id, value: "eccbc87e4b5ce2fe28308fd9f2a7baf3" }
               - column: { name: username, value: dr_siti_rahmah }
               - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: sitirahmah.pd@yahoo.co.id }
@@ -35,7 +35,7 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
-              - column: { name: id, valueNumeric: 4 }
+              - column: { name: id, value: "a87ff679a2f3e71d9181a67b7542122c" }
               - column: { name: username, value: budi_santoso }
               - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: budi.santoso90@gmail.com }
@@ -44,7 +44,7 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
-              - column: { name: id, valueNumeric: 5 }
+              - column: { name: id, value: "e4da3b7fbbce2345d7772b0674a318d5" }
               - column: { name: username, value: ani_wijaya }
               - column: { name: password, value: "$2a$10$4N/uTpZ.IwIfPOuFyYvgaeYbkJy0DE7PW7i7yGEA7s2bdFowEvB/K" }
               - column: { name: email, value: ani.wijaya@outlook.com }
@@ -55,8 +55,8 @@ databaseChangeLog:
         - insert:
             tableName: doctors
             columns:
-              - column: { name: id, valueNumeric: 1 }
-              - column: { name: user_id, valueNumeric: 2 }
+              - column: { name: id, value: "c4ca4238a0b923820dcc509a6f75849b" }
+              - column: { name: user_id, value: "c81e728d9d4c2f636f067f89cc14862c" }
               - column: { name: full_name, value: "dr. Hendrawan Wijaya, Sp.A" }
               - column: { name: specialization, value: "Spesialis Anak" }
               - column: { name: sip, value: "446/2083/SIP-D/411/2024" }
@@ -66,8 +66,8 @@ databaseChangeLog:
         - insert:
             tableName: doctors
             columns:
-              - column: { name: id, valueNumeric: 2 }
-              - column: { name: user_id, valueNumeric: 3 }
+              - column: { name: id, value: "c81e728d9d4c2f636f067f89cc14862c" }
+              - column: { name: user_id, value: "eccbc87e4b5ce2fe28308fd9f2a7baf3" }
               - column: { name: full_name, value: "dr. Siti Rahmah, Sp.PD" }
               - column: { name: specialization, value: "Spesialis Penyakit Dalam" }
               - column: { name: sip, value: "446/1042/SIP-D/411/2023" }
@@ -79,8 +79,8 @@ databaseChangeLog:
         - insert:
             tableName: patients
             columns:
-              - column: { name: id, valueNumeric: 1 }
-              - column: { name: user_id, valueNumeric: 4 }
+              - column: { name: id, value: "c4ca4238a0b923820dcc509a6f75849b" }
+              - column: { name: user_id, value: "a87ff679a2f3e71d9181a67b7542122c" }
               - column: { name: full_name, value: "Budi Santoso" }
               - column: { name: nik, value: "3201020304050001" }
               - column: { name: phone, value: "081398761234" }
@@ -91,8 +91,8 @@ databaseChangeLog:
         - insert:
             tableName: patients
             columns:
-              - column: { name: id, valueNumeric: 2 }
-              - column: { name: user_id, valueNumeric: 5 }
+              - column: { name: id, value: "c81e728d9d4c2f636f067f89cc14862c" }
+              - column: { name: user_id, value: "e4da3b7fbbce2345d7772b0674a318d5" }
               - column: { name: full_name, value: "Ani Wijaya" }
               - column: { name: nik, value: "3201020304050002" }
               - column: { name: phone, value: "082232433695" }
@@ -105,7 +105,7 @@ databaseChangeLog:
         - insert:
             tableName: hospital_services
             columns:
-              - column: { name: id, valueNumeric: 1 }
+              - column: { name: id, value: "c4ca4238a0b923820dcc509a6f75849b" }
               - column: { name: name, value: "Konsultasi Poli Anak" }
               - column: { name: category, value: "POLIKLINIK" }
               - column: { name: description, value: "Pemeriksaan kesehatan bayi dan anak sakit maupun konsultasi tumbuh kembang" }
@@ -114,7 +114,7 @@ databaseChangeLog:
         - insert:
             tableName: hospital_services
             columns:
-              - column: { name: id, valueNumeric: 2 }
+              - column: { name: id, value: "c81e728d9d4c2f636f067f89cc14862c" }
               - column: { name: name, value: "Konsultasi Poli Penyakit Dalam" }
               - column: { name: category, value: "POLIKLINIK" }
               - column: { name: description, value: "Pemeriksaan kesehatan organ dalam, diabetes, hipertensi, dll" }
@@ -123,7 +123,7 @@ databaseChangeLog:
         - insert:
             tableName: hospital_services
             columns:
-              - column: { name: id, valueNumeric: 3 }
+              - column: { name: id, value: "eccbc87e4b5ce2fe28308fd9f2a7baf3" }
               - column: { name: name, value: "Cek Darah Lengkap + Kolesterol" }
               - column: { name: category, value: "LAB" }
               - column: { name: description, value: "Pemeriksaan laboratorium sel darah lengkap, kolesterol total, asam urat dan gula darah" }
@@ -132,7 +132,7 @@ databaseChangeLog:
         - insert:
             tableName: hospital_services
             columns:
-              - column: { name: id, valueNumeric: 4 }
+              - column: { name: id, value: "a87ff679a2f3e71d9181a67b7542122c" }
               - column: { name: name, value: "Rontgen Thorax AP" }
               - column: { name: category, value: "RAD" }
               - column: { name: description, value: "Pemeriksaan radiologi foto dada/paru-paru" }
@@ -143,9 +143,9 @@ databaseChangeLog:
         - insert:
             tableName: doctor_schedules
             columns:
-              - column: { name: id, valueNumeric: 1 }
-              - column: { name: doctor_id, valueNumeric: 1 }
-              - column: { name: service_id, valueNumeric: 1 }
+              - column: { name: id, value: "c4ca4238a0b923820dcc509a6f75849b" }
+              - column: { name: doctor_id, value: "c4ca4238a0b923820dcc509a6f75849b" }
+              - column: { name: service_id, value: "c4ca4238a0b923820dcc509a6f75849b" }
               - column: { name: day_of_week, valueNumeric: 1 }
               - column: { name: start_time, value: "09:00:00" }
               - column: { name: end_time, value: "12:00:00" }
@@ -155,9 +155,9 @@ databaseChangeLog:
         - insert:
             tableName: doctor_schedules
             columns:
-              - column: { name: id, valueNumeric: 2 }
-              - column: { name: doctor_id, valueNumeric: 1 }
-              - column: { name: service_id, valueNumeric: 1 }
+              - column: { name: id, value: "c81e728d9d4c2f636f067f89cc14862c" }
+              - column: { name: doctor_id, value: "c4ca4238a0b923820dcc509a6f75849b" }
+              - column: { name: service_id, value: "c4ca4238a0b923820dcc509a6f75849b" }
               - column: { name: day_of_week, valueNumeric: 3 }
               - column: { name: start_time, value: "14:00:00" }
               - column: { name: end_time, value: "17:00:00" }
@@ -167,9 +167,9 @@ databaseChangeLog:
         - insert:
             tableName: doctor_schedules
             columns:
-              - column: { name: id, valueNumeric: 3 }
-              - column: { name: doctor_id, valueNumeric: 2 }
-              - column: { name: service_id, valueNumeric: 2 }
+              - column: { name: id, value: "eccbc87e4b5ce2fe28308fd9f2a7baf3" }
+              - column: { name: doctor_id, value: "c81e728d9d4c2f636f067f89cc14862c" }
+              - column: { name: service_id, value: "c81e728d9d4c2f636f067f89cc14862c" }
               - column: { name: day_of_week, valueNumeric: 2 }
               - column: { name: start_time, value: "10:00:00" }
               - column: { name: end_time, value: "13:00:00" }

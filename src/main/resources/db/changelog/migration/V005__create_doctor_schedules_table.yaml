@@ -9,14 +9,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: VARCHAR(36)
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: doctor_id
-                  type: BIGINT
+                  type: VARCHAR(36)
                   constraints:
                     nullable: false
                     foreignKeyName: fk_schedules_doctor
@@ -25,7 +24,7 @@ databaseChangeLog:
                     deleteCascade: false
               - column:
                   name: service_id
-                  type: BIGINT
+                  type: VARCHAR(36)
                   constraints:
                     nullable: false
                     foreignKeyName: fk_schedules_service

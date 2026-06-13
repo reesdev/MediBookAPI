@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "1. Auth API", description = "Endpoint untuk registrasi dan login (Pasien/Dokter/Admin)")
 public class AuthController {
 
     private final AuthService authService;

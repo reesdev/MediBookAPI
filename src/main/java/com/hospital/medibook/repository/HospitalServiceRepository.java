@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HospitalServiceRepository extends JpaRepository<HospitalService, Long> {
+public interface HospitalServiceRepository extends JpaRepository<HospitalService, String> {
     List<HospitalService> findByIsDeletedFalse();
 }

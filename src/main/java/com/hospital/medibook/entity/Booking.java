@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(
@@ -22,8 +23,8 @@ import java.time.LocalDateTime;
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "booking_code", nullable = false, unique = true, length = 50)
     private String bookingCode;
@@ -47,6 +48,9 @@ public class Booking {
     @Column(name = "booking_date", nullable = false)
     private LocalDate bookingDate;
 
+    @Column(name = "booking_time", nullable = false)
+    private LocalTime bookingTime;
+
     @Column(name = "queue_number", nullable = false)
     private int queueNumber;
 
@@ -56,6 +60,12 @@ public class Booking {
 
     @Column(columnDefinition = "TEXT")
     private String complaint;
+
+    @Column(columnDefinition = "TEXT")
+    private String diagnosis;
+
+    @Column(name = "prescription_notes", columnDefinition = "TEXT")
+    private String prescriptionNotes;
 
     @Column(name = "total_fee", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalFee;

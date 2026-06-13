@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class HospitalServiceResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private String id;
     private String name;
     private String category;
     private String description;

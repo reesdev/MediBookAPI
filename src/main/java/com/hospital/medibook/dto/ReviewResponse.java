@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ReviewResponse {
-    private Long reviewId;
+    private String reviewId;
     private String bookingCode;
     private Integer rating;
     private String message;

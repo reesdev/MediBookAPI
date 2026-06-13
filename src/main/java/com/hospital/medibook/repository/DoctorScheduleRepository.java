@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, Long> {
+public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, String> {
 
-    List<DoctorSchedule> findByDoctorIdAndIsDeletedFalse(Long doctorId);
+    List<DoctorSchedule> findByDoctorIdAndIsDeletedFalse(String doctorId);
 
     List<DoctorSchedule> findByIsDeletedFalse();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM DoctorSchedule s WHERE s.id = :id AND s.isDeleted = false")
-    Optional<DoctorSchedule> findByIdForUpdate(@Param("id") Long id);
+    Optional<DoctorSchedule> findByIdForUpdate(@Param("id") String id);
 }

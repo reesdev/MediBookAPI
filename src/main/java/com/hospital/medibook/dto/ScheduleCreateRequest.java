@@ -12,10 +12,10 @@ import java.time.LocalTime;
 @Builder
 public class ScheduleCreateRequest {
     @NotNull(message = "Doctor ID wajib diisi")
-    private Long doctorId;
+    private String doctorId;
 
     @NotNull(message = "Service ID wajib diisi")
-    private Long serviceId;
+    private String serviceId;
 
     @NotNull(message = "Hari dalam seminggu wajib diisi (1 = Senin, 7 = Minggu)")
     @Min(value = 1, message = "Hari minimal 1 (Senin)")

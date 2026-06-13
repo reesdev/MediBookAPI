@@ -9,11 +9,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class BookingResponse {
-    private Long id;
+    private String id;
     private String bookingCode;
     private Integer queueNumber;
     private LocalDate bookingDate;
     private String status;
     private BigDecimal totalFee;
     private String message;
+    private String serviceName;
+    private String doctorName;
+    private java.time.LocalDateTime createdAt;
+    private java.time.LocalTime bookingTime;
 }

@@ -42,7 +42,7 @@ public class AuthService {
             throw new ConflictException("NIK sudah terdaftar");
         }
 
-        // 1. Buat User
+        // Registrasi akun pengguna
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -52,7 +52,7 @@ public class AuthService {
                 .build();
         User savedUser = userRepository.save(user);
 
-        // 2. Buat Patient
+        // Daftarkan profil pasien
         Gender gender;
         try {
             gender = Gender.fromValue(request.getGender());
@@ -91,8 +91,6 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .token(token)
-                .role(user.getRole().name())
-                .username(user.getUsername())
                 .build();
     }
 }

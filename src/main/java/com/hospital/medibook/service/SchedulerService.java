@@ -9,6 +9,7 @@ import com.hospital.medibook.repository.BookingEventRepository;
 import com.hospital.medibook.repository.BookingRepository;
 import com.hospital.medibook.repository.DoctorScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,21 +28,23 @@ public class SchedulerService {
     private final BookingRepository bookingRepository;
     private final DoctorScheduleRepository scheduleRepository;
     private final BookingEventRepository eventRepository;
+    private final ApplicationContext applicationContext;
 
     // Berjalan setiap 60 detik (1 menit)
     @Scheduled(fixedRate = 60000)
     public void cancelUnpaidBookings() {
-        LocalDateTime limitTime = LocalDateTime.now().minusMinutes(15);
+        LocalDateTime limitTime = LocalDateTime.now().minusMinutes(1);
         List<Booking> expiredBookings = bookingRepository.findByStatusAndCreatedAtBefore(
                 BookingStatus.PENDING_PAYMENT, limitTime
         );
 
         if (!expiredBookings.isEmpty()) {
-            log.info("Menemukan {} pendaftaran kedaluwarsa (belum dibayar > 15 menit). Memulai auto-cancel...", expiredBookings.size());
+            log.info("Menemukan {} pendaftaran kedaluwarsa (belum dibayar > 1 menit). Memulai auto-cancel...", expiredBookings.size());
+            SchedulerService proxy = applicationContext.getBean(SchedulerService.class);
             for (Booking booking : expiredBookings) {
                 try {
-                    // Diproses satu per satu dalam transaksi terpisah agar kegagalan satu data tidak menggagalkan seluruh antrean
-                    processCancellation(booking.getId());
+                    // Diproses satu per satu dalam transaksi terpisah via proxy agar @Transactional berjalan
+                    proxy.processCancellation(booking.getId());
                 } catch (Exception e) {
                     log.error("Gagal melakukan auto-cancel untuk booking ID: " + booking.getId(), e);
                 }
@@ -50,13 +53,13 @@ public class SchedulerService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processCancellation(Long bookingId) {
+    public void processCancellation(String bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElse(null);
         if (booking == null || booking.getStatus() != BookingStatus.PENDING_PAYMENT) {
             return;
         }
 
-        // 1. Pessimistic Lock pada Jadwal Dokter untuk memulihkan kuota dengan aman
+        // Kunci data jadwal untuk mengembalikan kuota
         if (booking.getSchedule() != null) {
             DoctorSchedule schedule = scheduleRepository.findByIdForUpdate(booking.getSchedule().getId()).orElse(null);
             if (schedule != null) {
@@ -66,17 +69,17 @@ public class SchedulerService {
             }
         }
 
-        // 2. Ubah Status Booking ke CANCELLED
+        // Ubah status menjadi batal otomatis
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
 
-        // 3. Catat Audit Event
+        // Rekam log pembatalan
         BookingEvent event = BookingEvent.builder()
                 .booking(booking)
                 .status(BookingStatus.CANCELLED.name())
                 .eventType("SYSTEM_AUTO_CANCEL")
                 .actor(Actor.SYSTEM)
-                .detail("Pendaftaran dibatalkan otomatis oleh sistem karena tidak melakukan pembayaran dalam batas waktu 15 menit.")
+                .detail("Pendaftaran dibatalkan otomatis oleh sistem karena tidak melakukan pembayaran dalam batas waktu 1 menit.")
                 .createdAt(LocalDateTime.now())
                 .build();
         eventRepository.save(event);

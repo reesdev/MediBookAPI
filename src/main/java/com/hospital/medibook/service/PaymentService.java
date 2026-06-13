@@ -27,12 +27,12 @@ public class PaymentService {
     private final BookingEventRepository eventRepository;
 
     @Transactional
-    public PaymentResponse payBooking(Long bookingId, PaymentRequest request) {
-        // 1. Ambil data Booking
+    public PaymentResponse payBooking(String bookingId, PaymentRequest request) {
+        // Cari data pendaftaran
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking tidak ditemukan."));
 
-        // 2. Validasi Status Booking
+        // Pastikan status menunggu pembayaran
         if (booking.getStatus() == BookingStatus.CONFIRMED) {
             throw new BadRequestException("Booking ini sudah dibayar.");
         }
@@ -43,21 +43,21 @@ public class PaymentService {
             throw new BadRequestException("Booking tidak berada dalam status menunggu pembayaran.");
         }
 
-        // 3. Validasi Jumlah Pembayaran
+        // Verifikasi kecocokan nominal tagihan
         if (booking.getTotalFee().compareTo(request.getAmount()) != 0) {
             throw new BadRequestException("Jumlah pembayaran tidak sesuai. Diperlukan: " + booking.getTotalFee());
         }
 
-        // 4. Update Status Booking menjadi CONFIRMED
+        // Ubah status ke CONFIRMED
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
 
-        // 5. Generate Kode Transaksi Unik: TX-yyyyMMdd-XXXX
+        // Buat kode transaksi
         String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String randomPart = String.format("%05d", (int)(Math.random() * 100000));
         String transactionCode = "TX-" + datePart + "-" + randomPart;
 
-        // 6. Simpan Detail Transaksi
+        // Rekam riwayat transaksi
         Transaction transaction = Transaction.builder()
                 .booking(booking)
                 .transactionCode(transactionCode)
@@ -69,7 +69,7 @@ public class PaymentService {
                 .build();
         transactionRepository.save(transaction);
 
-        // 7. Catat Audit Booking Event
+        // Catat perubahan status
         BookingEvent event = BookingEvent.builder()
                 .booking(booking)
                 .status(BookingStatus.CONFIRMED.name())

@@ -9,8 +9,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: VARCHAR(36)
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -22,7 +21,7 @@ databaseChangeLog:
                     unique: true
               - column:
                   name: patient_id
-                  type: BIGINT
+                  type: VARCHAR(36)
                   constraints:
                     nullable: false
                     foreignKeyName: fk_bookings_patient
@@ -31,7 +30,7 @@ databaseChangeLog:
                     deleteCascade: false
               - column:
                   name: service_id
-                  type: BIGINT
+                  type: VARCHAR(36)
                   constraints:
                     nullable: false
                     foreignKeyName: fk_bookings_service
@@ -40,7 +39,7 @@ databaseChangeLog:
                     deleteCascade: false
               - column:
                   name: doctor_id
-                  type: BIGINT
+                  type: VARCHAR(36)
                   constraints:
                     nullable: true
                     foreignKeyName: fk_bookings_doctor
@@ -49,7 +48,7 @@ databaseChangeLog:
                     deleteCascade: false
               - column:
                   name: schedule_id
-                  type: BIGINT
+                  type: VARCHAR(36)
                   constraints:
                     nullable: true
                     foreignKeyName: fk_bookings_schedule
