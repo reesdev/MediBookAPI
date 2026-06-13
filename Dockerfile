@@ -1,21 +1,35 @@
-FROM eclipse-temurin:17-jdk-alpine AS builder
+# ================================
+# STAGE 1: Build Application
+# ================================
+# Menggunakan Java 17 sesuai dengan konfigurasi pom.xml Anda
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
 WORKDIR /app
 
-COPY mvnw .
-COPY .mvn .mvn
+# Copy pom.xml dulu supaya dependency bisa di-cache
 COPY pom.xml .
+RUN mvn dependency:go-offline
 
-RUN chmod +x ./mvnw
-RUN ./mvnw dependency:go-offline -B
+# Copy source code
+COPY src ./src
 
-COPY src src
-RUN ./mvnw clean package -DskipTests
+# Build jar
+RUN mvn clean package -DskipTests
 
+# ================================
+# STAGE 2: Runtime
+# ================================
 FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
 
-COPY --from=builder /app/target/*.jar app.jar
+RUN apk add --no-cache wget
 
+# Copy hasil build dari stage sebelumnya
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port (Disamakan dengan application.yml medibookAPI yaitu 3090)
 EXPOSE 3090
 
+# Default command 
 ENTRYPOINT ["java", "-jar", "app.jar"]
