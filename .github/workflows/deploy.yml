@@ -1,4 +1,8 @@
-name: Deploy Medibook to VPS
+name: CI/CD - Build & Deploy
+
+concurrency:
+  group: deploy-student1
+  cancel-in-progress: true
 
 on:
   push:
@@ -6,46 +10,97 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE_NAME: medibook-api
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      APP_DIR: /home/student01
+
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v3
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      # Karena Dockerfile kita sudah Multi-Stage (Super Canggih), 
+      # kita tidak perlu nge-build Maven di sini, Docker akan melakukannya sendiri.
 
-    - name: Build and Push Docker Image
-      run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/medibook-api:latest .
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/medibook-api:latest
+      # 🐳 Docker Login
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-    - name: Copy docker-compose to VPS
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        source: "docker-compose.yml"
-        target: "/home/student01/"
+      # 🐳 Build & Push
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-    - name: Execute Deployment on VPS
-      uses: appleboy/ssh-action@v1.0.3
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        envs: DOCKER_USER
-        script: |
-          cd /home/student01/
-          sed -i "s/YOUR_DOCKERHUB_USERNAME/$DOCKER_USER/g" docker-compose.yml
-          docker compose down || true
-          docker compose pull
-          docker compose up -d
-          docker image prune -f
+      # 📦 Copy compose
+      - name: Copy docker-compose to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "${{ env.APP_DIR }}"
+          overwrite: true
+
+      # 🚀 DEPLOY ON VPS
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            mkdir -p ${{ env.APP_DIR }}
+            cd ${{ env.APP_DIR }}
+            echo "🚀 Starting deployment..."
+
+            # 📝 Menulis ULANG file .env khusus untuk Production VPS 
+            # (Ini sangat brilian, jadi Anda tidak perlu masuk ke Putty lagi!)
+            echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" > .env
+            echo "APP_PORT=9001" >> .env
+            echo "SPRING_PROFILES_ACTIVE=prod" >> .env
+            
+            # Konfigurasi Jaringan & Database VPS (Sesuai jatah Student1)
+            echo "DB_HOST=classroom_mysql" >> .env
+            echo "DB_PORT=3306" >> .env
+            echo "DB_NAME=db_spring_student1" >> .env
+            echo "DB_USER=student1" >> .env
+            echo "DB_PASSWORD=kX9#mP2v\$LqZ" >> .env 
+            
+            # Konfigurasi Redis VPS
+            echo "REDIS_HOST=be_redis" >> .env
+            echo "REDIS_PORT=6379" >> .env
+
+            # 🌐 Pastikan network eksternal sudah ada (sesuai nama dari docker-compose kita)
+            docker network inspect classroom_classroom_net >/dev/null 2>&1 || docker network create classroom_classroom_net
+
+            echo "📥 Pulling latest image from Docker Hub..."
+            docker compose pull medibook-app
+
+            echo "🔄 Restarting services..."
+            docker compose down
+            docker compose up -d medibook-app
+
+            echo "⏳ Waiting for container to initialize..."
+            sleep 30
+
+            # Verifikasi status deployment
+            if docker compose ps | grep -q "Up"; then
+              echo "✅ Deployment completed successfully!"
+              docker compose ps
+            else
+              echo "❌ Deployment failed! Check application logs below:"
+              docker compose logs medibook-app
+              exit 1
+            fi
