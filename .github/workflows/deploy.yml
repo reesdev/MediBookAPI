@@ -63,16 +63,16 @@ jobs:
             echo "APP_PORT=9001" >> .env
             echo "SPRING_PROFILES_ACTIVE=prod" >> .env
             
-            echo "DB_HOST=classroom_mysql" >> .env
+            echo "DB_HOST=38.47.180.18" >> .env
             echo "DB_PORT=3306" >> .env
             echo "DB_NAME=db_spring_student1" >> .env
             echo "DB_USER=student1" >> .env
             echo "DB_PASSWORD=kX9#mP2v\$LqZ" >> .env 
             
-            echo "REDIS_HOST=be_redis" >> .env
+            echo "REDIS_HOST=host.docker.internal" >> .env
             echo "REDIS_PORT=6379" >> .env
 
-            docker network inspect classroom_classroom_net >/dev/null 2>&1 || docker network create classroom_classroom_net
+            docker network inspect be_classroom_net >/dev/null 2>&1 || docker network create be_classroom_net
 
             docker compose pull medibook-app
             docker compose down

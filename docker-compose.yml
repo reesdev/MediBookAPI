@@ -23,9 +23,8 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - classroom_net
+      - be_classroom_net
 
 networks:
-  classroom_net:
-    name: classroom_classroom_net
-    external: true
+  be_classroom_net:
+    driver: bridge
