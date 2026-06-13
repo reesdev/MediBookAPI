@@ -18,9 +18,10 @@ public enum Gender {
     }
 
     public static Gender fromValue(String value) {
-        for (Gender gender : Gender.values()) {
-            if (gender.value.equalsIgnoreCase(value)) {
-                return gender;
+        Gender[] genders = Gender.values();
+        for (int i = 0; i < genders.length; i++) {
+            if (genders[i].value.equalsIgnoreCase(value)) {
+                return genders[i];
             }
         }
         throw new IllegalArgumentException("Unknown gender value: " + value);

@@ -72,8 +72,8 @@ public class PaymentService {
         // Catat perubahan status
         BookingEvent event = BookingEvent.builder()
                 .booking(booking)
-                .status(BookingStatus.CONFIRMED.name())
-                .eventType("PAYMENT_RECEIVED")
+                .status(BookingStatus.CONFIRMED)
+                .eventType(com.hospital.medibook.constant.EventType.PAYMENT_RECEIVED)
                 .actor(Actor.PATIENT)
                 .detail("Pembayaran sandbox berhasil diterima melalui " + request.getPaymentMethod())
                 .createdAt(LocalDateTime.now())

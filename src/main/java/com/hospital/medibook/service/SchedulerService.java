@@ -41,7 +41,8 @@ public class SchedulerService {
         if (!expiredBookings.isEmpty()) {
             log.info("Menemukan {} pendaftaran kedaluwarsa (belum dibayar > 1 menit). Memulai auto-cancel...", expiredBookings.size());
             SchedulerService proxy = applicationContext.getBean(SchedulerService.class);
-            for (Booking booking : expiredBookings) {
+            for (int i = 0; i < expiredBookings.size(); i++) {
+                Booking booking = expiredBookings.get(i);
                 try {
                     // Diproses satu per satu dalam transaksi terpisah via proxy agar @Transactional berjalan
                     proxy.processCancellation(booking.getId());
@@ -76,8 +77,8 @@ public class SchedulerService {
         // Rekam log pembatalan
         BookingEvent event = BookingEvent.builder()
                 .booking(booking)
-                .status(BookingStatus.CANCELLED.name())
-                .eventType("SYSTEM_AUTO_CANCEL")
+                .status(BookingStatus.CANCELLED)
+                .eventType(com.hospital.medibook.constant.EventType.AUTO_CANCELLED)
                 .actor(Actor.SYSTEM)
                 .detail("Pendaftaran dibatalkan otomatis oleh sistem karena tidak melakukan pembayaran dalam batas waktu 1 menit.")
                 .createdAt(LocalDateTime.now())

@@ -4,9 +4,9 @@ server:
 spring:
   # Konfigurasi Database Datasource
   datasource:
-    url: jdbc:mysql://localhost:3307/medibook_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:medibook_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # Konfigurasi Liquibase Migration
@@ -27,8 +27,8 @@ spring:
   # Konfigurasi Caching (Redis)
   data:
     redis:
-      host: localhost
-      port: 6380
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
       timeout: 60000
 
   # Batasan Ukuran Upload File

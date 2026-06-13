@@ -1,30 +1,21 @@
+version: '3.8'
+
 services:
   medibook-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ${DOCKER_HUB_USERNAME}/medibook-app:latest
-    container_name: medibook-api
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # Nama image akan diganti otomatis oleh skrip deploy.yml pada saat CI/CD
+    image: YOUR_DOCKERHUB_USERNAME/medibook-api:latest
+    container_name: student1_medibook
     ports:
-      - ${APP_PORT:-9000}:${APP_PORT:-9000}
+      # Port VPS eksternal (9001) diarahkan ke port internal Spring Boot (3090)
+      - "9001:3090"
     env_file:
       - .env
     restart: always
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget --quiet --tries=1 --spider http://localhost:$${APP_PORT:-9000}/actuator/health || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     networks:
-      - be_classroom_net
+      - classroom_net
 
+# Menghubungkan ke jaringan yang sama dengan MySQL ('classroom_mysql') yang sudah ada di VPS
 networks:
-  be_classroom_net:
-    driver: bridge
+  classroom_net:
+    name: classroom_classroom_net
+    external: true

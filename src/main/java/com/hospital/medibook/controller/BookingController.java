@@ -15,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -66,10 +69,10 @@ public class BookingController {
     }
 
     @GetMapping("/available-times")
-    public ResponseEntity<java.util.List<String>> getAvailableTimes(
+    public ResponseEntity<List<String>> getAvailableTimes(
             @RequestParam("scheduleId") String scheduleId,
-            @RequestParam("date") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
-        java.util.List<String> times = bookingService.getAvailableTimeSlots(scheduleId, date);
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<String> times = bookingService.getAvailableTimeSlots(scheduleId, date);
         return ResponseEntity.ok(times);
     }
 }

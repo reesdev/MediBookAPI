@@ -1,7 +1,10 @@
 package com.hospital.medibook.controller;
 
 import com.hospital.medibook.dto.BookingResponse;
+import com.hospital.medibook.dto.CompleteExaminationRequest;
 import com.hospital.medibook.service.DoctorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +39,16 @@ public class DoctorController {
     }
 
     @PostMapping(value = "/bookings/{id}/complete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Selesaikan Pemeriksaan", description = "Endpoint untuk menyelesaikan pemeriksaan dan mengunggah resep (opsional).")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = CompleteExaminationRequest.class)
+            )
+    )
     public ResponseEntity<BookingResponse> completeExamination(
             @PathVariable("id") String bookingId,
-            @Valid @ModelAttribute com.hospital.medibook.dto.CompleteExaminationRequest request) {
+            @Parameter(hidden = true) @Valid @ModelAttribute CompleteExaminationRequest request) {
         BookingResponse response = doctorService.completeExamination(bookingId, request);
         return ResponseEntity.ok(response);
     }

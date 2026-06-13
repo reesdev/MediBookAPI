@@ -94,8 +94,8 @@ public class DoctorService {
         // Catat Audit Event
         BookingEvent event = BookingEvent.builder()
                 .booking(savedBooking)
-                .status(newStatus.name())
-                .eventType("STATUS_UPDATED")
+                .status(newStatus)
+                .eventType(com.hospital.medibook.constant.EventType.STATUS_UPDATED)
                 .actor(Actor.DOCTOR)
                 .detail("Status pemeriksaan diubah oleh dokter dari " + oldStatus + " menjadi " + newStatus)
                 .createdAt(LocalDateTime.now())
@@ -133,8 +133,8 @@ public class DoctorService {
 
         BookingEvent event = BookingEvent.builder()
                 .booking(savedBooking)
-                .status(BookingStatus.COMPLETED.name())
-                .eventType("EXAMINATION_COMPLETED")
+                .status(BookingStatus.COMPLETED)
+                .eventType(com.hospital.medibook.constant.EventType.EXAMINATION_COMPLETED)
                 .actor(Actor.DOCTOR)
                 .detail("Pemeriksaan selesai. Hasil diagnosa: " + request.getDiagnosis())
                 .createdAt(LocalDateTime.now())

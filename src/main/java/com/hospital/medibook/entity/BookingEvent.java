@@ -22,11 +22,13 @@ public class BookingEvent {
     @JoinColumn(name = "booking_id", nullable = false, foreignKey = @ForeignKey(name = "fk_events_booking"))
     private Booking booking;
 
-    @Column(nullable = false, length = 30)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
+    private com.hospital.medibook.constant.BookingStatus status;
 
-    @Column(name = "event_type", nullable = false, length = 50)
-    private String eventType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type", nullable = false, length = 50, columnDefinition = "VARCHAR(50)")
+    private com.hospital.medibook.constant.EventType eventType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('PATIENT', 'DOCTOR', 'ADMIN', 'SYSTEM')")
