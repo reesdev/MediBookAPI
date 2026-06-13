@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: V004-create-hospital-services-table
+      author: reesky
+      comment: "Membuat tabel hospital_services dengan check constraint pada base_price"
+      changes:
+        - createTable:
+            tableName: hospital_services
+            columns:
+              - column:
+                  name: id
+                  type: VARCHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: ENUM('POLIKLINIK', 'LAB', 'RAD', 'FISIO')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: base_price
+                  type: DECIMAL(12, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: TINYINT(1)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - sql:
+            dbms: mysql
+            sql: ALTER TABLE hospital_services ADD CONSTRAINT chk_base_price CHECK (base_price >= 0.0);

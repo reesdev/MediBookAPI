@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/migration/V001__create_users_table.yaml
+  - include:
+      file: db/changelog/migration/V002__create_patients_table.yaml
+  - include:
+      file: db/changelog/migration/V003__create_doctors_table.yaml
+  - include:
+      file: db/changelog/migration/V004__create_hospital_services_table.yaml
+  - include:
+      file: db/changelog/migration/V005__create_doctor_schedules_table.yaml
+  - include:
+      file: db/changelog/migration/V006__create_bookings_table.yaml
+  - include:
+      file: db/changelog/migration/V007__create_transactions_table.yaml
+  - include:
+      file: db/changelog/migration/V008__create_booking_events_table.yaml
+  - include:
+      file: db/changelog/migration/V009__create_medical_documents_table.yaml
+  - include:
+      file: db/changelog/migration/V010__create_reviews_table.yaml
+  - include:
+      file: db/changelog/migration/V011__insert_seeds.yaml
+  - include:
+      file: db/changelog/migration/V012__add_booking_time_to_bookings_table.yaml
+  - include:
+      file: db/changelog/migration/V013__add_diagnosis_to_bookings_table.yaml

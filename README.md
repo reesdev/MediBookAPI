@@ -103,6 +103,33 @@ Berikut adalah diagram use case peran pengguna di dalam sistem (merujuk pada ber
 
 ![Use Case Diagram](USE%20CASE%20RBAC.png)
 
+### Daftar Endpoint API (Berdasarkan Kategori RBAC)
+
+Sistem ini memiliki belasan endpoint yang diamankan ketat menggunakan JWT *Stateless*. Berikut adalah pemetaannya berdasarkan *Role*:
+
+**1. 🌐 Akses Publik (Tanpa Token)**
+* `POST /api/auth/register` : Mendaftarkan akun pasien baru.
+* `POST /api/auth/login` : Autentikasi dan penerbitan token JWT.
+* `GET /api/catalog/doctors` : Melihat katalog dokter beserta fitur pencarian dan paginasi.
+* `GET /api/catalog/services` : Melihat daftar layanan poliklinik/penunjang medis.
+
+**2. 🧑‍⚕️ Akses Pasien (Role: `PATIENT`)**
+* `GET /api/patients/me/profile` : Melihat biodata rekam medis diri sendiri.
+* `GET /api/patients/me/bookings` : Melihat riwayat seluruh kunjungan dan status booking.
+* `POST /api/bookings` : Melakukan pendaftaran/reservasi jadwal (mendukung upload file).
+* `POST /api/bookings/{id}/pay` : Membayar tagihan booking (simulasi *sandbox*).
+* `POST /api/bookings/{id}/reviews` : Memberikan ulasan dan rating pada pelayanan.
+
+**3. 🩺 Akses Dokter (Role: `DOCTOR`)**
+* `GET /api/doctor-panel/bookings` : Memantau daftar pasien yang antre pada jadwal hari ini.
+* `PATCH /api/doctor-panel/bookings/{id}/status` : Memanggil pasien dan mengubah status pemeriksaan (`IN_PROGRESS` hingga `COMPLETED`).
+
+**4. 👑 Akses Administrator (Role: `ADMIN`)**
+* `POST, PUT, DELETE /api/doctors` : Mengelola data master profil Dokter.
+* `POST, PUT, DELETE /api/services` : Mengelola data master Layanan Rumah Sakit.
+* `POST, PUT, DELETE /api/schedules` : Mengatur jadwal praktek beserta kuota harian dokter.
+* `GET /api/reports/finance` : Mengakses laporan ringkasan transaksi & keuangan rumah sakit.
+
 ### Tabel Matriks Use Case
 Berikut adalah detail pemetaan fungsi fitur untuk setiap peran pengguna:
 

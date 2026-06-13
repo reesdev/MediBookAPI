@@ -74,6 +74,7 @@ CREATE TABLE bookings (
     doctor_id BIGINT NULL,
     schedule_id BIGINT NULL,
     booking_date DATE NOT NULL,
+    booking_time TIME NOT NULL,
     queue_number INT NOT NULL,
     status ENUM('PENDING_PAYMENT', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING_PAYMENT',
     complaint TEXT,
