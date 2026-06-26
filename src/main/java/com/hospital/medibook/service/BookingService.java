@@ -37,7 +37,7 @@ public class BookingService {
     private final MedicalDocumentRepository documentRepository;
     private final StringRedisTemplate redisTemplate;
 
-    @Transactional
+    @Transactional(isolation = org.springframework.transaction.annotation.Isolation.READ_COMMITTED)
     public BookingResponse createBooking(BookingRequest request) {
         // Dapatkan identitas pasien terautentikasi
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

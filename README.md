@@ -75,7 +75,7 @@ Pemisahan tanggung jawab kode backend diatur rapi dalam struktur paket Spring Bo
 3. **`doctors`**: Profil spesialisasi dokter (id, user_id (FK RESTRICT), full_name, specialization, sip, phone, email, is_deleted).
 4. **`hospital_services`**: Jenis pelayanan pemeriksaan medis (id, name, category (ENUM), description, base_price, is_deleted).
 5. **`doctor_schedules`**: Jadwal hari kerja praktek dokter (id, doctor_id (FK RESTRICT), service_id (FK RESTRICT), day_of_week, start_time, end_time, max_patients, **booked_count**, is_deleted).
-6. **`bookings`**: Transaksi pendaftaran pasien (id, booking_code, patient_id (FK RESTRICT), service_id (FK RESTRICT), doctor_id (FK RESTRICT), schedule_id (FK RESTRICT), booking_date, queue_number, status (ENUM), complaint, total_fee, created_at, updated_at).
+6. **`bookings`**: Transaksi pendaftaran pasien (id, booking_code, patient_id (FK RESTRICT), service_id (FK RESTRICT), doctor_id (FK RESTRICT), schedule_id (FK RESTRICT), booking_date, booking_time, queue_number, status (ENUM), complaint, total_fee, created_at, updated_at).
 7. **`transactions`**: Log transaksi pembayaran finansial (id, booking_id (FK RESTRICT), transaction_code, amount, payment_method, status (ENUM), paid_at, created_at).
 8. **`booking_events`**: Jejak audit status pendaftaran (id, booking_id (FK RESTRICT), status, event_type, actor (ENUM), detail, created_at).
 9. **`medical_documents`**: Metadata berkas rujukan/resep digital (id, booking_id (FK RESTRICT), file_path, original_file_name, file_size, content_type, uploaded_by (ENUM), document_type (ENUM), created_at).
