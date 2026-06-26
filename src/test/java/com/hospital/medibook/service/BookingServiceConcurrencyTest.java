@@ -49,20 +49,11 @@ public class BookingServiceConcurrencyTest {
     @Autowired
     private DoctorScheduleRepository scheduleRepository;
 
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
-    private BookingEventRepository bookingEventRepository;
-
     @MockBean
     private StringRedisTemplate redisTemplate;
 
     private DoctorSchedule savedSchedule;
     private List<User> testUsers = new ArrayList<>();
-
-    @Autowired
-    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
@@ -72,16 +63,12 @@ public class BookingServiceConcurrencyTest {
         when(valueOperations.setIfAbsent(anyString(), anyString(), any(Long.class), any(TimeUnit.class)))
                 .thenReturn(true);
 
-        // Bersihkan data secara paksa menggunakan Native Query (Aman dari Soft Delete & FK Constraint)
-        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0;");
-        jdbcTemplate.execute("TRUNCATE TABLE booking_events;");
-        jdbcTemplate.execute("TRUNCATE TABLE bookings;");
-        jdbcTemplate.execute("TRUNCATE TABLE doctor_schedules;");
-        jdbcTemplate.execute("TRUNCATE TABLE doctors;");
-        jdbcTemplate.execute("TRUNCATE TABLE hospital_services;");
-        jdbcTemplate.execute("TRUNCATE TABLE patients;");
-        jdbcTemplate.execute("TRUNCATE TABLE users;");
-        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1;");
+        // Bersihkan data jika ada sisa dari test lain
+        scheduleRepository.deleteAll();
+        doctorRepository.deleteAll();
+        serviceRepository.deleteAll();
+        patientRepository.deleteAll();
+        userRepository.deleteAll();
 
         // 1. Buat User Dokter
         User docUser = User.builder()
